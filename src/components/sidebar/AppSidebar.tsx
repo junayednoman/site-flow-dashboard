@@ -22,9 +22,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {state === "expanded" ? (
           <Link
             href={"/dashboard"}
-            className="flex items-center justify-between gap-6 mt-2"
+            className="flex items-center justify-between gap-6 mt-2 pl-1"
           >
-            <Image src={logo} alt="logo" width={100} height={100} />
+            <Image src={logo} alt="logo" width={82} height={82} />
           </Link>
         ) : (
           state === "collapsed" && (
@@ -32,12 +32,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               href={"/dashboard"}
               className="flex items-center justify-between gap-6 mt-2"
             >
-              <Image
-                src={icon}
-                alt="logo"
-                width={30}
-                height={30}
-              />
+              <Image src={icon} alt="logo" width={28} height={28} />
             </Link>
           )
         )}
