@@ -10,11 +10,11 @@ const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   credentials: "include",
   prepareHeaders: (headers) => {
-    const accessToken = Cookies.get("alainmtzAccessToken");
+    const accessToken = Cookies.get("accessToken");
 
     // If user have a token set it in the state
     if (accessToken) {
-      headers.set("authorization", `${accessToken}`);
+      headers.set("authorization", `Bearer ${accessToken}`);
     }
     return headers;
   }

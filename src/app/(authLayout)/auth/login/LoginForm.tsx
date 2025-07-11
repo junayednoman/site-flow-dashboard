@@ -7,7 +7,7 @@ import * as z from "zod";
 import AForm from "@/components/form/AForm";
 import { AInput } from "@/components/form/AInput";
 import { Button } from "@/components/ui/button";
-
+import { jwtDecode } from "jwt-decode";
 import { loginSchema } from "@/validations/auth.validation";
 import { useLoginMutation } from "@/redux/api/authApi";
 import { setUser } from "@/redux/slice/authSlice";
@@ -25,19 +25,14 @@ const LoginForm = () => {
   const redirectUrl = searchParams.get("redirect") || "/dashboard";
 
   const onSuccess = (res: any) => {
-    dispatch(setUser({ user: res.data.user, token: res.data.accessToken }));
+    const decodedUser = jwtDecode(res.data.accessToken);
+
+    dispatch(setUser({ user: decodedUser, token: res.data.accessToken }));
     router.push(redirectUrl);
   };
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
-    console.log("data", data);
-    const { email, password } = data;
-    await handleMutation(
-      { email, password },
-      login,
-      "Logging in...",
-      onSuccess
-    );
+    await handleMutation(data, login, "Logging in...", onSuccess);
   };
 
   return (
@@ -55,9 +50,8 @@ const LoginForm = () => {
       <AForm
         schema={loginSchema}
         defaultValues={{
-          email: "alainmtzadmin@gmail.com",
-          password: "admin123",
-          rememberPassword: false,
+          email: "junayednoman05@gmail.com",
+          password: "password",
         }}
         onSubmit={onSubmit}
       >
@@ -65,7 +59,7 @@ const LoginForm = () => {
         <AInput name="password" label="Password" type="password" required />
 
         <div className="flex items-center justify-between">
-          <ACheckbox label="Remember password" name="rememberPassword" />
+          <ACheckbox label="Remember password" name="is_remember" />
           <div className="text-right">
             <Link href={"/auth/forgot-password"}>
               <Button

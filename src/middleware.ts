@@ -15,7 +15,7 @@ import { NextResponse, NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   // const { pathname, searchParams } = request.nextUrl;
 
-  // const token = request.cookies.get("alainmtzAccessToken")?.value;
+  // const token = request.cookies.get("accessToken")?.value;
 
   // let decodedUser: DecodedUser | null = null;
   // let isAuthenticated = false;

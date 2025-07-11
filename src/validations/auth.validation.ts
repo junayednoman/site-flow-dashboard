@@ -45,5 +45,5 @@ export const loginSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters"),
-  rememberPassword: z.boolean(),
+  is_remember: z.boolean().default(false).optional(),
 });

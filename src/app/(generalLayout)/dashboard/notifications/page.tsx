@@ -14,12 +14,13 @@ const Notifications = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <h1 className="text-card-foreground text-2xl font-bold mb-6">
+      <h1 className="text-2xl font-bold text-primary-foreground">
         Notifications
       </h1>
-      <div className="space-y-4">
+      <div className="space-y-4 mt-6">
         {notifications.map((notification, index) => (
           <NotificationCard
+            seen={index % 2 === 0}
             key={notification.id}
             title={notification.title}
             message={notification.message}

@@ -8,6 +8,7 @@ interface NotificationCardProps {
   title: string;
   message: string;
   timestamp: string;
+  seen: boolean;
   onView?: () => void;
   onDelete?: () => void;
 }
@@ -17,14 +18,25 @@ const NotificationCard = ({
   message,
   timestamp,
   onView,
+  seen,
   onDelete,
 }: NotificationCardProps) => {
   return (
-    <div className="p-4 bg-card rounded-xl w-[50%]">
+    <div className="p-4 px-6 bg-card rounded-xl w-[50%]">
       <div className="flex items-center justify-between gap-8">
         <div>
-          <h6 className="font-bold text-lg text-primary-foreground">{title}</h6>
-          <p className="text-primary-foreground font-medium m-1 -ml-[1px]">
+          <h6
+            className={`${
+              seen ? "font-medium" : "font-extrabold"
+            } text-lg text-primary-foreground`}
+          >
+            {title}
+          </h6>
+          <p
+            className={`text-primary-foreground m-1 -ml-[1px] ${
+              seen ? "font-medium" : "font-bold"
+            }`}
+          >
             {message}
           </p>
           <p className="mt-4 text-sm text-card-foreground">{timestamp}</p>

@@ -44,8 +44,8 @@ export function EarningOverview() {
   return (
     <div className="bg-card rounded-xl p-6 px-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-primary-foreground">
-          Earning Overview
+        <h1 className="text-2xl font-bold text-primary-foreground ">
+          Earning details
         </h1>
         <AFilterSelect
           onChange={setYear}

@@ -34,7 +34,7 @@ const GeneralLayout = ({ children }: { children: ReactNode }) => {
         </header>
         <main>
           {children}
-          <Toaster position="top-right" duration={3000} />
+          <Toaster position="top-right" duration={3500} />
         </main>
       </SidebarInset>
     </SidebarProvider>

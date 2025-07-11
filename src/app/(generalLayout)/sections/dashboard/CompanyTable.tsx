@@ -317,6 +317,7 @@ const CompanyListTable = ({
 
                     {company.status.toLowerCase() === "active" ? (
                       <AAlertDialog
+                        title="Block the user!"
                         onAction={() => handleBlockUser(company.id)}
                         // Use children instead of trigger if that's the expected prop
                       >
