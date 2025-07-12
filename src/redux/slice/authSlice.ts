@@ -23,7 +23,7 @@ const authSlice = createSlice({
       state.token = token;
 
       // set cookie for middleware access
-      Cookies.set("accessToken", token, { path: "/" });
+      Cookies.set("accessToken", token, { path: "/", expires: .5 });
     },
     logOut: (state) => {
       state.user = null;
