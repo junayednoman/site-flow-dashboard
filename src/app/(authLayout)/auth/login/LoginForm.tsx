@@ -16,6 +16,7 @@ import { ACheckbox } from "@/components/form/ACheckbox";
 import Image from "next/image";
 import logo from "@/assets/logo.png";
 import Link from "next/link";
+import { toast } from "sonner";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -26,6 +27,8 @@ const LoginForm = () => {
 
   const onSuccess = (res: any) => {
     const decodedUser = jwtDecode(res.data.accessToken);
+    if ((decodedUser as any).role !== "admin")
+      return toast.warning("You are not an admin");
 
     dispatch(setUser({ user: decodedUser, token: res.data.accessToken }));
     router.push(redirectUrl);

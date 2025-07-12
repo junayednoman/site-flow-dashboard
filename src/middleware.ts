@@ -1,72 +1,58 @@
 import { NextResponse, NextRequest } from "next/server";
-// import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
-// const DASHBOARD_PATH = /^\/dashboard(\/.*)?$/;
-// const AUTH_PATH = /^\/auth(\/.*)?$/;
+interface DecodedUser {
+  _id: string;
+  email: string;
+  role: string;
+  iat: number;
+  exp: number;
+}
 
-// interface DecodedUser {
-//   _id: string;
-//   email: string;
-//   role: string;
-//   iat: number;
-//   exp: number;
-// }
+export function middleware(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl;
+  const token = request.cookies.get("accessToken")?.value;
 
-export async function middleware(request: NextRequest) {
-  // const { pathname, searchParams } = request.nextUrl;
+  let isAuthenticated = false;
+  let decodedUser: DecodedUser | null = null;
 
-  // const token = request.cookies.get("accessToken")?.value;
+  // Check if user is authenticated
+  if (token) {
+    try {
+      decodedUser = jwtDecode<DecodedUser>(token);
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (decodedUser.exp > currentTime && decodedUser.role === "admin") {
+        isAuthenticated = true;
+      }
+    } catch {
+      // Invalid token; treat as unauthenticated
+    }
+  }
 
-  // let decodedUser: DecodedUser | null = null;
-  // let isAuthenticated = false;
+  // Check if the current path is under /dashboard
+  const isDashboardPath = pathname.startsWith("/dashboard");
 
-  // if (token) {
-  //   try {
-  //     decodedUser = jwtDecode<DecodedUser>(token);
+  // Check if the current path is under /auth
+  const isAuthPath = pathname.startsWith("/auth");
 
-  //     const currentTime = Math.floor(Date.now() / 1000)
-  //     if (decodedUser.exp < currentTime) {
-  //       console.log("Token has expired");
-  //       decodedUser = null
-  //     } else {
-  //       isAuthenticated = true
-  //     }
+  // Redirect unauthorized users to login for dashboard routes
+  if (isDashboardPath && !isAuthenticated) {
+    const loginUrl = new URL("/auth/login", request.url);
+    loginUrl.searchParams.set(
+      "redirect",
+      pathname + (searchParams.toString() ? `?${searchParams}` : "")
+    );
+    return NextResponse.redirect(loginUrl);
+  }
 
-  //     if (isAuthenticated && decodedUser?.role !== "admin") {
-  //       console.log("User does not have the required role (admin)");
-  //       isAuthenticated = false;
-  //       decodedUser = null;
-  //     }
-  //   } catch (error) {
-  //     console.error("Token decoding failed:", error);
-  //     decodedUser = null;
-  //     isAuthenticated = false;
-  //   }
-  // }
-
-  // if (DASHBOARD_PATH.test(pathname)) {
-  //   if (!isAuthenticated) {
-  //     const loginUrl = new URL("/auth/login", request.url);
-  //     loginUrl.searchParams.set("redirect", pathname + (searchParams.toString() ? `?${searchParams}` : ""));
-  //     return NextResponse.redirect(loginUrl);
-  //   }
-  //   const response = NextResponse.next();
-  //   if (decodedUser) {
-  //     response.headers.set("x-decoded-user", JSON.stringify(decodedUser));
-  //   }
-  //   return response;
-  // }
-
-  // if (AUTH_PATH.test(pathname)) {
-  //   if (isAuthenticated) {
-  //     return NextResponse.redirect(new URL("/dashboard", request.url));
-  //   }
-  //   return NextResponse.next();
-  // }
+  // Redirect authenticated users away from auth routes
+  if (isAuthPath && isAuthenticated) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/auth/:path*"],
+  matcher: ["/auth/:path*", "/dashboard/:path*"],
 };
