@@ -2,14 +2,22 @@ import { baseApi } from "./baseApi";
 
 const dashboardApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getMeta: builder.query({
+    getDashboardSummary: builder.query({
       query: () => ({
-        url: "/meta",
+        url: "/summary/stats",
         method: "GET",
       }),
-      providesTags: ["meta"]
+      providesTags: ["summary"]
+    }),
+    getEarningSummary: builder.query({
+      query: (params) => ({
+        url: "/summary/earning",
+        method: "GET",
+        params
+      }),
+      providesTags: ["summary"]
     }),
   }),
 })
 
-export const { useGetMetaQuery } = dashboardApi;
+export const { useGetDashboardSummaryQuery, useGetEarningSummaryQuery } = dashboardApi;

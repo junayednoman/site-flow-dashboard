@@ -7,24 +7,19 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useState } from "react";
 import { yearOptions } from "@/data/global.data";
 import { AFilterSelect } from "@/components/form/AFilterSelect";
 
-const chartData = [
-  { month: "Jan", value: 10.55 },
-  { month: "Feb", value: 25 },
-  { month: "Mar", value: 40 },
-  { month: "Apr", value: 60 },
-  { month: "May", value: 100.5 },
-  { month: "Jun", value: 70 },
-  { month: "Jul", value: 50 },
-  { month: "Aug", value: 65 },
-  { month: "Sep", value: 45 },
-  { month: "Oct", value: 35 },
-  { month: "Nov", value: 30 },
-  { month: "Dec", value: 40 },
-];
+interface EarningData {
+  month: string;
+  amount: number;
+}
+
+interface EarningOverviewProps {
+  data: EarningData[];
+  year: string;
+  setYear: (year: string) => void;
+}
 
 const chartConfig = {
   value: {
@@ -33,18 +28,23 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function EarningOverview() {
+export function EarningOverview({ data, year, setYear }: EarningOverviewProps) {
   const currentYear = new Date().getFullYear();
-  const [year, setYear] = useState(currentYear.toString());
-  const minValue = Math.min(...chartData.map((item) => item.value));
-  const maxValue = Math.max(...chartData.map((item) => item.value));
-  const yAxisDomain = [Math.floor(maxValue), Math.floor(minValue)];
-  console.log("year", year);
+
+  // Map API data to chart format
+  const chartData = data.map((item) => ({
+    month: item.month.slice(0, 3), // "January" → "Jan"
+    value: item.amount,
+  }));
+
+  const minValue = Math.min(...chartData.map((item) => item.value), 0);
+  const maxValue = Math.max(...chartData.map((item) => item.value), 0);
+  const yAxisDomain = [minValue, maxValue + 10]; // Add padding to max
 
   return (
     <div className="bg-card rounded-xl p-6 px-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-primary-foreground ">
+        <h1 className="text-2xl font-bold text-primary-foreground">
           Earning details
         </h1>
         <AFilterSelect
@@ -71,7 +71,7 @@ export function EarningOverview() {
             tickLine={false}
             axisLine={false}
             tickMargin={10}
-            tickFormatter={(value) => value.slice(0, 3)}
+            tickFormatter={(value) => value}
           />
           <YAxis
             domain={yAxisDomain}
@@ -79,6 +79,7 @@ export function EarningOverview() {
             tickLine={false}
             axisLine={false}
             tickMargin={20}
+            tickFormatter={(value) => `$${value}`}
           />
           <ChartTooltip
             cursor={false}
@@ -87,7 +88,7 @@ export function EarningOverview() {
                 formatter={(value) => (
                   <div className="flex items-center justify-between w-full">
                     <p className="text-muted-foreground font-medium">
-                      Earnings:{" "}
+                      Earnings:
                     </p>
                     <p>${value}</p>
                   </div>
