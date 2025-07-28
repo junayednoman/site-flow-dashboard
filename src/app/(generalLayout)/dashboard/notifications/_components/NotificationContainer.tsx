@@ -92,21 +92,25 @@ const NotificationContainer = () => {
           {meta.total > limit ? (
             <div className="text-center mt-7">
               <Button
-                disabled={isFetching}
+                disabled={!isDeletingAll && !isMarkingAllAsRead && isFetching}
                 onClick={handleShowMore}
                 className="bg-primary/80 hover:bg-primary"
               >
-                {isFetching ? "Loading..." : "Show More"}
+                {!isDeletingAll && !isMarkingAllAsRead && isFetching
+                  ? "Loading..."
+                  : "Show More"}
               </Button>
             </div>
           ) : (
             <div className="text-center mt-7">
               <Button
-                disabled={isFetching}
+                disabled={!isDeletingAll && !isMarkingAllAsRead && isFetching}
                 onClick={handleShowLess}
                 className="bg-primary/80 hover:bg-primary"
               >
-                {isFetching ? "Loading..." : "Sow less"}
+                {!isDeletingAll && !isMarkingAllAsRead && isFetching
+                  ? "Loading..."
+                  : "Sow less"}
               </Button>
             </div>
           )}
