@@ -12,7 +12,7 @@ interface DecodedUser {
 export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
-  const token = request.cookies.get("accessToken")?.value;
+  const token = request.cookies.get("constructionAccessToken")?.value;
 
   let isAuthenticated = false;
   let decodedUser: DecodedUser | null = null;

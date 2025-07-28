@@ -10,11 +10,11 @@ const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   credentials: "include",
   prepareHeaders: (headers) => {
-    const accessToken = Cookies.get("accessToken");
+    const constructionAccessToken = Cookies.get("constructionAccessToken");
 
     // If user have a token set it in the state
-    if (accessToken) {
-      headers.set("authorization", `Bearer ${accessToken}`);
+    if (constructionAccessToken) {
+      headers.set("authorization", `Bearer ${constructionAccessToken}`);
     }
     return headers;
   }
@@ -37,13 +37,13 @@ const baseQueryWithReauth: BaseQueryFn<
       credentials: "include"
     }).then(res => res.json());
 
-    if (res?.data?.accessToken) {
+    if (res?.data?.constructionAccessToken) {
       const user = (api.getState() as RootState).auth.user;
 
       api.dispatch(
         setUser({
           user,
-          token: res.data.accessToken,
+          token: res.data.constructionAccessToken,
         }),
       );
 
@@ -58,6 +58,6 @@ const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["auth", "profile", "summary", "leaderboard", "banner", "companyAdmin"],
+  tagTypes: ["auth", "profile", "summary", "leaderboard", "banner", "companyAdmin", "plans"],
   endpoints: () => ({})
 })

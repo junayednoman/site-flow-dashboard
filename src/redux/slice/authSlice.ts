@@ -23,13 +23,13 @@ const authSlice = createSlice({
       state.token = token;
 
       // set cookie for middleware access
-      Cookies.set("accessToken", token, { path: "/", expires: .5 });
+      Cookies.set("constructionAccessToken", token, { path: "/", expires: .5 });
     },
     logOut: (state) => {
       state.user = null;
       state.token = null;
       // Remove token for cookies
-      Cookies.remove("accessToken", { path: "/" });
+      Cookies.remove("constructionAccessToken", { path: "/" });
       Cookies.remove("refreshToken", { path: "/" });
     }
   }
