@@ -25,9 +25,6 @@ const ProfileDropdown = () => {
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
   const router = useRouter();
-
-  console.log("pathname", pathname);
-
   const onSuccess = () => {
     dispatch(logOut());
     router.push(`/auth/login?redirect=${pathname}`);

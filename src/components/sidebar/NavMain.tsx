@@ -34,8 +34,6 @@ export function NavMain({
   // Determine if a menu item is active based on the current pathname
   const isActive = (url: string) => pathname === url;
 
-  console.log("pathname", pathname);
-
   const onSuccess = () => {
     dispatch(logOut());
     router.push(`/auth/login?redirect=${pathname}`);

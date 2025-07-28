@@ -4,8 +4,6 @@ import Cookies from 'js-cookie';
 import { logOut, setUser } from '../slice/authSlice';
 import { RootState } from '../store';
 
-console.log('process.env.NEXT_PUBLIC_API_BASE_URL', process.env.NEXT_PUBLIC_API_BASE_URL);
-
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
   credentials: "include",
@@ -58,6 +56,6 @@ const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["auth", "profile", "summary", "leaderboard", "banner", "companyAdmin", "plans"],
+  tagTypes: ["auth", "profile", "summary", "leaderboard", "banner", "companyAdmin", "plans", "notification"],
   endpoints: () => ({})
 })

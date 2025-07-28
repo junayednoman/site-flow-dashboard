@@ -1,28 +1,36 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Eye, Trash2 } from "lucide-react";
+import { Loader, Trash2 } from "lucide-react";
+import { useDeleteSingleNotificationMutation } from "@/redux/api/notificationApi";
+import handleMutation from "@/utils/handleMutation";
 
 // Define the props interface
 interface NotificationCardProps {
+  id: string;
   title: string;
   message: string;
   timestamp: string;
   seen: boolean;
   onView?: () => void;
-  onDelete?: () => void;
+  onDelete?: (id: string) => void;
 }
 
 const NotificationCard = ({
+  id,
   title,
   message,
   timestamp,
-  onView,
   seen,
-  onDelete,
 }: NotificationCardProps) => {
+  const [deleteSingleNotification, { isLoading }] =
+    useDeleteSingleNotificationMutation();
+  const handleDelete = () => {
+    handleMutation(id, deleteSingleNotification, "Deleting notification...");
+  };
+
   return (
-    <div className="p-4 px-6 bg-card rounded-xl w-[50%]">
+    <div className="p-4 px-6 bg-card rounded-xl">
       <div className="flex items-center justify-between gap-8">
         <div>
           <h6
@@ -42,15 +50,17 @@ const NotificationCard = ({
           <p className="mt-4 text-sm text-card-foreground">{timestamp}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="icon" onClick={onView}>
-            <Eye className="w-4 h-4 text-accent" />
-          </Button>
           <Button
+            disabled={isLoading}
+            onClick={handleDelete}
             className="bg-destructive hover:bg-destructive/80"
             size="icon"
-            onClick={onDelete}
           >
-            <Trash2 className="w-4 h-4 text-accent" />
+            {isLoading ? (
+              <Loader className="w-4 h-4 text-accent animate-spin" />
+            ) : (
+              <Trash2 className="w-4 h-4 text-accent" />
+            )}
           </Button>
         </div>
       </div>
