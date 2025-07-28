@@ -38,7 +38,8 @@ const ProfileDropdown = () => {
       <DropdownMenuTrigger>
         <button className="">
           <Image
-            src={profile?.photoUrl || avatarImg}
+            className="rounded-full"
+            src={profile?.image || avatarImg}
             alt="logo"
             width={40}
             height={40}

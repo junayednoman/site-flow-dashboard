@@ -9,6 +9,8 @@ import {
   useUpdateSettingsMutation,
 } from "@/redux/api/settingsApi";
 import handleMutation from "@/utils/handleMutation";
+import ASpinner from "@/components/ui/ASpinner";
+import AErrorMessage from "@/components/AErrorMessage";
 
 interface ContentSection {
   id: string;
@@ -24,6 +26,7 @@ const SettingsTabsEditor = () => {
     data: settingsData,
     isLoading,
     isError,
+    error,
     refetch,
   } = useGetSettingsContentQuery("");
   const [updateSettings, { isLoading: isUpdating }] =
@@ -108,14 +111,9 @@ const SettingsTabsEditor = () => {
       // (error) => console.error(`Failed to save ${section.title}:`, error)
     );
   };
-
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <ASpinner size={150} className="py-64" />;
   if (isError)
-    return (
-      <div>
-        Error loading settings. <button onClick={refetch}>Retry</button>
-      </div>
-    );
+    return <AErrorMessage error={error} onRetry={refetch} className="py-64" />;
 
   const currentSection = contentSections.find(
     (section) => section.id === activeTab

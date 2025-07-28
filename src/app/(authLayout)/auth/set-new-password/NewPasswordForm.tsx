@@ -19,32 +19,32 @@ import { useRouter, useSearchParams } from "next/navigation";
 import handleMutation from "@/utils/handleMutation";
 import { useResetForgottenPasswordMutation } from "@/redux/api/authApi";
 
-const newPasswordSchema = z
+const new_passwordSchema = z
   .object({
-    newPassword: z
+    new_password: z
       .string()
       .min(6, "Password must be at least 6 characters long")
       .max(50, "Password cannot exceed 50 characters"),
-    confirmPassword: z.string(),
+    confirm_password: z.string(),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  .refine((data) => data.new_password === data.confirm_password, {
     message: "Passwords do not match",
-    path: ["confirmPassword"],
+    path: ["confirm_password"],
   });
 
-type TNewPasswordFormValues = z.infer<typeof newPasswordSchema>;
+type Tnew_passwordFormValues = z.infer<typeof new_passwordSchema>;
 
-const NewPasswordForm = () => {
+const new_passwordForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
   const [resetPassword, { isLoading }] = useResetForgottenPasswordMutation();
 
-  const form = useForm<TNewPasswordFormValues>({
-    resolver: zodResolver(newPasswordSchema),
+  const form = useForm<Tnew_passwordFormValues>({
+    resolver: zodResolver(new_passwordSchema),
     defaultValues: {
-      newPassword: "",
-      confirmPassword: "",
+      new_password: "",
+      confirm_password: "",
     },
   });
 
@@ -52,11 +52,11 @@ const NewPasswordForm = () => {
     router.push("/auth/login");
   };
 
-  const onSubmit = (data: TNewPasswordFormValues) => {
+  const onSubmit = (data: Tnew_passwordFormValues) => {
     if (!email) {
       return;
     }
-    const password = { email, password: data.confirmPassword };
+    const password = { email, password: data.confirm_password };
     handleMutation(
       password,
       resetPassword,
@@ -93,7 +93,7 @@ const NewPasswordForm = () => {
           {/* New Password Field */}
           <FormField
             control={form.control}
-            name="newPassword"
+            name="new_password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-card-foreground font-medium">
@@ -115,7 +115,7 @@ const NewPasswordForm = () => {
           {/* Confirm Password Field */}
           <FormField
             control={form.control}
-            name="confirmPassword"
+            name="confirm_password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-card-foreground font-medium">
@@ -148,4 +148,4 @@ const NewPasswordForm = () => {
   );
 };
 
-export default NewPasswordForm;
+export default new_passwordForm;

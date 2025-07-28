@@ -54,7 +54,7 @@ const LoginForm = () => {
         schema={loginSchema}
         defaultValues={{
           email: "junayednoman05@gmail.com",
-          password: "newpass",
+          password: "encrypted",
         }}
         onSubmit={onSubmit}
       >

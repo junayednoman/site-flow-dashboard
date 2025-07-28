@@ -9,7 +9,10 @@ import {
   changePasswordSchema,
 } from "@/validations/auth.validation";
 
-const ChangePasswordForm = ({ onSubmit }: ChangePasswordFormProps) => {
+const ChangePasswordForm = ({
+  onSubmit,
+  isChanging,
+}: ChangePasswordFormProps) => {
   return (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold text-primary-foreground text-center">
@@ -19,35 +22,35 @@ const ChangePasswordForm = ({ onSubmit }: ChangePasswordFormProps) => {
       <AForm<ChangePasswordFormValues>
         schema={changePasswordSchema}
         defaultValues={
-          { currentPassword: "", newPassword: "", confirmPassword: "" } as
+          { old_password: "", new_password: "", confirm_password: "" } as
             | ChangePasswordFormValues
             | undefined
         }
         onSubmit={onSubmit}
       >
         <AInput
-          name="currentPassword"
+          name="old_password"
           label="Current Password"
           type="password"
           placeholder="Enter current password"
           required
         />
         <AInput
-          name="newPassword"
+          name="new_password"
           label="New Password"
           type="password"
           placeholder="Enter new password"
           required
         />
         <AInput
-          name="confirmPassword"
+          name="confirm_password"
           label="Confirm New Password"
           type="password"
           placeholder="Confirm new password"
           required
         />
-        <Button type="submit" className="w-full h-[50px]">
-          Save & Change
+        <Button disabled={isChanging} type="submit" className="w-full h-[50px]">
+          {isChanging ? "Changing..." : "Change Password"}
         </Button>
       </AForm>
     </div>

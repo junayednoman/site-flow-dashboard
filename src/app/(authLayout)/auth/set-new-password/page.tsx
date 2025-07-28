@@ -1,6 +1,6 @@
-import NewPasswordForm from "./NewPasswordForm";
+import new_passwordForm from "./new_passwordForm";
 
-const SetNewPassword = () => {
+const Setnew_password = () => {
   return (
     <main className="mx-auto flex flex-col items-center justify-center">
       <div className="h-screen grid grid-cols-2 w-full">
@@ -11,11 +11,11 @@ const SetNewPassword = () => {
           }}
         ></div>
         <div className="flex items-center justify-center">
-          <NewPasswordForm />
+          <new_passwordForm />
         </div>
       </div>
     </main>
   );
 };
 
-export default SetNewPassword;
+export default Setnew_password;
