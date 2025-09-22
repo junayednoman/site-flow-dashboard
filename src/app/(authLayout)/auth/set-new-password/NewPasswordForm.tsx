@@ -32,15 +32,15 @@ const new_passwordSchema = z
     path: ["confirm_password"],
   });
 
-type Tnew_passwordFormValues = z.infer<typeof new_passwordSchema>;
+type TNewPasswordValues = z.infer<typeof new_passwordSchema>;
 
-const new_passwordForm = () => {
+const NewPassword = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
   const [resetPassword, { isLoading }] = useResetForgottenPasswordMutation();
 
-  const form = useForm<Tnew_passwordFormValues>({
+  const form = useForm<TNewPasswordValues>({
     resolver: zodResolver(new_passwordSchema),
     defaultValues: {
       new_password: "",
@@ -52,7 +52,7 @@ const new_passwordForm = () => {
     router.push("/auth/login");
   };
 
-  const onSubmit = (data: Tnew_passwordFormValues) => {
+  const onSubmit = (data: TNewPasswordValues) => {
     if (!email) {
       return;
     }
@@ -148,4 +148,4 @@ const new_passwordForm = () => {
   );
 };
 
-export default new_passwordForm;
+export default NewPassword;

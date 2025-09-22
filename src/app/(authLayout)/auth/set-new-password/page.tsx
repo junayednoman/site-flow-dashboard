@@ -1,6 +1,11 @@
-import new_passwordForm from "./new_passwordForm";
+"use client";
+import dynamic from "next/dynamic";
 
-const Setnew_password = () => {
+const NewPassword = dynamic(() => import("./NewPasswordForm"), {
+  ssr: false,
+});
+
+const SetNewPassword = () => {
   return (
     <main className="mx-auto flex flex-col items-center justify-center">
       <div className="h-screen grid grid-cols-2 w-full">
@@ -11,11 +16,11 @@ const Setnew_password = () => {
           }}
         ></div>
         <div className="flex items-center justify-center">
-          <new_passwordForm />
+          <NewPassword />
         </div>
       </div>
     </main>
   );
 };
 
-export default Setnew_password;
+export default SetNewPassword;
