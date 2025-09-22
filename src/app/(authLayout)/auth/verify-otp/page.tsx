@@ -1,5 +1,9 @@
+"use client";
+import dynamic from "next/dynamic";
 
-import OtpVerificationForm from "./OtpVerificationForm";
+const OtpVerificationForm = dynamic(() => import("./OtpVerificationForm"), {
+  ssr: false,
+});
 
 const VerifyOtpPassword = () => {
   return (
