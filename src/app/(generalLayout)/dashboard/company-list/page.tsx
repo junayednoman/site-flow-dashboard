@@ -1,6 +1,6 @@
 import AContainer from "@/components/AContainer";
 import { Metadata } from "next";
-import CompanyListTable from "../../sections/dashboard/CompanyTable";
+import CompanyListTable from "./_components/CompanyTable";
 
 export const metadata: Metadata = {
   title: "Company List",

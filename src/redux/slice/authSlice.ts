@@ -23,13 +23,14 @@ const authSlice = createSlice({
       state.token = token;
 
       // set cookie for middleware access
-      Cookies.set("alainmtzAccessToken", token, { path: "/" });
+      Cookies.set("constructionAccessToken", token, { path: "/", expires: .5 });
     },
     logOut: (state) => {
       state.user = null;
       state.token = null;
       // Remove token for cookies
-      Cookies.remove("alainmtzAccessToken", { path: "/" });
+      Cookies.remove("constructionAccessToken", { path: "/" });
+      Cookies.remove("refreshToken", { path: "/" });
     }
   }
 })

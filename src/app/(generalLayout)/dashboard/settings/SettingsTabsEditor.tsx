@@ -1,25 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Save, Check } from "lucide-react";
 import JoditTextEditor from "@/components/form/ATextEditor";
-import { settingData } from "@/data/settings.data";
+import {
+  useGetSettingsContentQuery,
+  useUpdateSettingsMutation,
+} from "@/redux/api/settingsApi";
+import handleMutation from "@/utils/handleMutation";
+import ASpinner from "@/components/ui/ASpinner";
+import AErrorMessage from "@/components/AErrorMessage";
 
 interface ContentSection {
   id: string;
   title: string;
   content: string;
+  apiField: string; // Maps to API field name
 }
 
 const SettingsTabsEditor = () => {
   const [activeTab, setActiveTab] = useState("about");
-  const [savingStates, setSavingStates] = useState<Record<string, boolean>>({});
-  const [savedStates, setSavedStates] = useState<Record<string, boolean>>({});
 
+  const {
+    data: settingsData,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useGetSettingsContentQuery("");
+  const [updateSettings, { isLoading: isUpdating }] =
+    useUpdateSettingsMutation();
+
+  // Define sections with explicit API field mappings
+  const sections: ContentSection[] = [
+    { id: "about", title: "About Us", content: "", apiField: "about_us" },
+    {
+      id: "terms",
+      title: "Terms & Conditions",
+      content: "",
+      apiField: "terms_conditions",
+    },
+    {
+      id: "privacy",
+      title: "Privacy Policy",
+      content: "",
+      apiField: "privacy_policy",
+    },
+  ];
+
+  // Initialize contentSections with API data
   const [contentSections, setContentSections] =
-    useState<ContentSection[]>(settingData);
+    useState<ContentSection[]>(sections);
+
+  useEffect(() => {
+    if (settingsData?.data) {
+      setContentSections(
+        sections.map((section) => ({
+          ...section,
+          content: settingsData.data[section.apiField] || "",
+        }))
+      );
+    }
+  }, [settingsData]);
 
   const handleContentChange = (sectionId: string, content: string) => {
     setContentSections((prev) =>
@@ -27,37 +70,55 @@ const SettingsTabsEditor = () => {
         section.id === sectionId ? { ...section, content } : section
       )
     );
-    // Reset saved state when content changes
-    setSavedStates((prev) => ({ ...prev, [sectionId]: false }));
   };
+
+  const handleSave = (sectionId: string) => {
+    const section = contentSections.find((s) => s.id === sectionId);
+    if (!section) return;
+
+    const updatedData = {
+      about_us:
+        contentSections.find((s) => s.apiField === "about_us")?.content || "",
+      terms_conditions:
+        contentSections.find((s) => s.apiField === "terms_conditions")
+          ?.content || "",
+      privacy_policy:
+        contentSections.find((s) => s.apiField === "privacy_policy")?.content ||
+        "",
+    };
+    // return console.log("updatedData", updatedData);
+    handleMutation(
+      updatedData,
+      updateSettings,
+      "Saving changes..."
+      // (response) => {
+      //   // Update local state with the latest content immediately
+      //   if (response?.data) {
+      //     setContentSections((prev) =>
+      //       prev.map((section) => ({
+      //         ...section,
+      //         content: response.data[section.apiField] || section.content,
+      //       }))
+      //     );
+      //   }
+      //   setSavedStates((prev) => ({ ...prev, [sectionId]: true }));
+      //   setTimeout(
+      //     () => setSavedStates((prev) => ({ ...prev, [sectionId]: false })),
+      //     2000
+      //   );
+      //   refetch(); // Sync with latest API data
+      // },
+      // (error) => console.error(`Failed to save ${section.title}:`, error)
+    );
+  };
+  if (isLoading) return <ASpinner size={150} className="py-64" />;
+  if (isError)
+    return <AErrorMessage error={error} onRetry={refetch} className="py-64" />;
 
   const currentSection = contentSections.find(
     (section) => section.id === activeTab
   );
   console.log("currentSection", currentSection);
-  const handleSave = async (sectionId: string) => {
-    setSavingStates((prev) => ({ ...prev, [sectionId]: true }));
-
-    try {
-      // Simulate save operation
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const section = contentSections.find((s) => s.id === sectionId);
-      console.log(`Saving ${section?.title}:`, section?.content);
-
-      // Here you would make your API call
-      // await saveContent(sectionId, section?.content)
-
-      setSavedStates((prev) => ({ ...prev, [sectionId]: true }));
-      setTimeout(() => {
-        setSavedStates((prev) => ({ ...prev, [sectionId]: false }));
-      }, 2000);
-    } catch (error) {
-      console.error("Save failed:", error);
-    } finally {
-      setSavingStates((prev) => ({ ...prev, [sectionId]: false }));
-    }
-  };
 
   return (
     <div className="h-screen bg-background flex flex-col">
@@ -67,7 +128,6 @@ const SettingsTabsEditor = () => {
           onValueChange={setActiveTab}
           className="flex flex-col"
         >
-          {/* Tabs Header */}
           <TabsList className="grid w-full grid-cols-3 bg-card mb-6 h-14">
             <TabsTrigger
               value="about"
@@ -88,8 +148,6 @@ const SettingsTabsEditor = () => {
               Privacy Policy
             </TabsTrigger>
           </TabsList>
-
-          {/* Tab Content */}
           <div className="flex-1 flex flex-col">
             {contentSections.map((section) => (
               <TabsContent
@@ -98,9 +156,8 @@ const SettingsTabsEditor = () => {
                 className="flex-1 flex flex-col mt-0"
               >
                 <div className="flex-1 flex flex-col">
-                  {/* Editor */}
                   <div className="flex-1 mb-6">
-                    <div className="h-fit  rounded-lg overflow-hidden">
+                    <div className="h-fit rounded-lg overflow-hidden">
                       <JoditTextEditor
                         content={section.content}
                         onChange={(content) =>
@@ -108,32 +165,14 @@ const SettingsTabsEditor = () => {
                         }
                         placeholder={`Enter your ${section.title.toLowerCase()} content here...`}
                       />
-                      {/* Save Button */}
                       <div className="flex justify-end mt-8">
                         <Button
                           onClick={() => handleSave(section.id)}
-                          disabled={
-                            savingStates[section.id] || savedStates[section.id]
-                          }
+                          disabled={isUpdating}
                           className="min-w-[140px] gap-2"
                           size="lg"
                         >
-                          {savingStates[section.id] ? (
-                            <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                              Saving...
-                            </>
-                          ) : savedStates[section.id] ? (
-                            <>
-                              <Check className="h-4 w-4" />
-                              Saved
-                            </>
-                          ) : (
-                            <>
-                              <Save className="h-4 w-4" />
-                              Save Changes
-                            </>
-                          )}
+                          {isUpdating ? "Saving..." : "Save Changes"}
                         </Button>
                       </div>
                     </div>

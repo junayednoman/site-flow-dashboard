@@ -12,7 +12,7 @@ import {
 
 interface AlertDialogCustomProps {
   children: React.ReactNode;
-  title?: string;
+  title: string;
   description?: string;
   cancelText?: string;
   actionText?: string;
@@ -23,7 +23,7 @@ interface AlertDialogCustomProps {
 
 export function AAlertDialog({
   children,
-  title = "Are you sure?",
+  title = "Delete!",
   description = "Are you sure you want to continue?",
   cancelText = "Cancel",
   actionText = "Confirm",

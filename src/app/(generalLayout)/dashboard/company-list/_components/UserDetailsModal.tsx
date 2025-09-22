@@ -8,29 +8,37 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { defaultImg } from "@/data/global.data";
+import { TCompanyData } from "@/interface/company.interface";
 
 interface UserDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  data?: TCompanyData | null;
 }
 
-export function UserDetailsModal({ isOpen, onClose }: UserDetailsModalProps) {
+export function UserDetailsModal({
+  isOpen,
+  onClose,
+  data,
+}: UserDetailsModalProps) {
+  if (!data) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md bg-card border-border p-6 rounded-lg shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-primary-foreground">
-            User Details
+            Company Details
           </DialogTitle>
           <DialogDescription className="sr-only">
-            User and company details modal
+            Company details modal
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col items-center space-y-4 mt-4">
           <div
             className="w-32 h-32 bg-cover bg-center bg-no-repeat rounded-full"
             style={{
-              backgroundImage: `url(${defaultImg})`,
+              backgroundImage: `url(${data.user?.logo || defaultImg})`,
             }}
           ></div>
           <div className="w-full space-y-2 mt-3">
@@ -39,16 +47,36 @@ export function UserDetailsModal({ isOpen, onClose }: UserDetailsModalProps) {
             </h4>
             <div>
               <p className="text-sm text-foreground py-3">
-                Company Name: Diw Constructions
+                Company Name: {data.user?.company_name || "N/A"}
               </p>
               <p className="text-sm text-foreground border-t py-3">
-                Company Email: company@dw.com
+                Email: {data.email || "N/A"}
               </p>
               <p className="text-sm text-foreground border-t py-3">
-                Admin Name: Eric
+                Admin Name: {data.user?.name || "N/A"}
               </p>
-              <p className="text-sm text-foreground border-t pt-3">
-                Subscription Plan: Premium
+              <p className="text-sm text-foreground border-t py-3">
+                Status: {data.is_blocked ? "Blocked" : "Active"}
+              </p>
+              <p className="text-sm text-foreground border-t py-3">
+                Created At:{" "}
+                {data.createdAt
+                  ? new Date(data.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : "N/A"}
+              </p>
+              <p className="text-sm text-foreground border-t py-3">
+                Updated At:
+                {data.updatedAt
+                  ? new Date(data.updatedAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : "N/A"}
               </p>
             </div>
           </div>

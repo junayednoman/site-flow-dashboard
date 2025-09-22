@@ -2,22 +2,23 @@ import { z } from "zod";
 
 export const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, "Current password is required"),
-    newPassword: z
+    old_password: z.string().min(1, "Current password is required"),
+    new_password: z
       .string()
       .min(1, "New password is required")
       .min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+    confirm_password: z.string().min(1, "Please confirm your password"),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  .refine((data) => data.new_password === data.confirm_password, {
     message: "Passwords don't match",
-    path: ["confirmPassword"],
+    path: ["confirm_password"],
   });
 
 export type ChangePasswordFormValues = z.infer<typeof changePasswordSchema>;
 
 export interface ChangePasswordFormProps {
   onSubmit: (data: ChangePasswordFormValues) => void;
+  isChanging: boolean;
 }
 
 export const otpSchema = z.object({
@@ -45,5 +46,5 @@ export const loginSchema = z.object({
     .string()
     .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters"),
-  rememberPassword: z.boolean(),
+  is_remember: z.boolean().default(false).optional(),
 });

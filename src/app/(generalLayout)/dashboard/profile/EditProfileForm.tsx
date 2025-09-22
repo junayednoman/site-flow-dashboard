@@ -11,9 +11,14 @@ import {
 interface EditProfileFormProps {
   defaultValues?: Partial<EditProfileFormValues>;
   onSubmit: (data: EditProfileFormValues) => void;
+  isUpdateLoading?: boolean;
 }
 
-const EditProfileForm = ({ defaultValues, onSubmit }: EditProfileFormProps) => {
+const EditProfileForm = ({
+  defaultValues,
+  onSubmit,
+  isUpdateLoading,
+}: EditProfileFormProps) => {
   return (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold text-primary-foreground text-center">
@@ -26,7 +31,7 @@ const EditProfileForm = ({ defaultValues, onSubmit }: EditProfileFormProps) => {
         onSubmit={onSubmit}
       >
         <AInput
-          name="userName"
+          name="name"
           label="User Name"
           placeholder="Enter your name"
           required
@@ -40,14 +45,18 @@ const EditProfileForm = ({ defaultValues, onSubmit }: EditProfileFormProps) => {
           required
         />
         <AInput
-          name="contactNo"
-          label="Contact no"
+          name="phone"
+          label="Phone no"
           type="tel"
-          placeholder="Enter your contact number"
+          placeholder="Enter your phone number"
           required
         />
-        <Button type="submit" className="w-full h-[50px]">
-          Save & Change
+        <Button
+          disabled={isUpdateLoading}
+          type="submit"
+          className="w-full h-[50px]"
+        >
+          {isUpdateLoading ? "Updating..." : "Update Profile"}
         </Button>
       </AForm>
     </div>

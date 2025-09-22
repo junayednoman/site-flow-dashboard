@@ -25,9 +25,6 @@ const ProfileDropdown = () => {
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
   const router = useRouter();
-
-  console.log("pathname", pathname);
-
   const onSuccess = () => {
     dispatch(logOut());
     router.push(`/auth/login?redirect=${pathname}`);
@@ -41,7 +38,8 @@ const ProfileDropdown = () => {
       <DropdownMenuTrigger>
         <button className="">
           <Image
-            src={profile?.photoUrl || avatarImg}
+            className="rounded-full"
+            src={profile?.image || avatarImg}
             alt="logo"
             width={40}
             height={40}

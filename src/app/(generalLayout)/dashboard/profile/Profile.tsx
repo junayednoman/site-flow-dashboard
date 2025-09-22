@@ -5,43 +5,45 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProfileHeader from "./ProfileHeader";
 import EditProfileForm from "./EditProfileForm";
 import ChangePasswordForm from "./ChangePasswordForm";
+import {
+  useGetProfileQuery,
+  useUpdateAdminProfileMutation,
+} from "@/redux/api/profileApi";
+import handleMutation from "@/utils/handleMutation";
+import ASpinner from "@/components/ui/ASpinner";
+import AErrorMessage from "@/components/AErrorMessage";
+import { useChangePasswordMutation } from "@/redux/api/authApi";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("edit-profile");
 
-  // Sample user data - replace with actual data
-  const userData = {
-    name: "Sunan Rahman",
-    role: "Admin",
-    avatar: "/placeholder.svg?height=120&width=120",
-    userName: "Justyna Bronowicka",
-    email: "Camille@gmail.com",
-    contactNo: "+99007007007",
-  };
+  const { data, isLoading, isError, error, refetch } = useGetProfileQuery("");
+  const profile = data?.data;
+  const [updateAdminProfile, { isLoading: isUpdateLoading }] =
+    useUpdateAdminProfileMutation();
+  const [changePassword, { isLoading: isChangePasswordLoading }] =
+    useChangePasswordMutation();
 
   const handleEditProfile = (data: any) => {
-    console.log("Edit Profile Data:", data);
-    // Handle profile update logic here
+    handleMutation(data, updateAdminProfile, "Updating profile...");
   };
 
   const handleChangePassword = (data: any) => {
-    console.log("Change Password Data:", data);
-    // Handle password change logic here
+    handleMutation(data, changePassword, "Changing password...");
+    // Handle password change logic here (API integration TBD)
   };
 
-  const handleBack = () => {
-    console.log("Navigate back");
-    // Handle navigation back
-  };
+  if (isLoading) return <ASpinner size={150} className="py-64" />;
+  if (isError)
+    return <AErrorMessage error={error} onRetry={refetch} className="py-64" />;
 
   return (
     <div className="min-h-screen bg-card p-6 rounded-lg">
       <div className="max-w-2xl mx-auto space-y-8">
         <ProfileHeader
-          name={userData.name}
-          role={userData.role}
-          avatar={userData.avatar}
-          onBack={handleBack}
+          name={profile.name}
+          role={"Admin"}
+          avatar={profile.image}
         />
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -64,16 +66,20 @@ const Profile = () => {
             <TabsContent value="edit-profile" className="mt-0">
               <EditProfileForm
                 defaultValues={{
-                  userName: userData.userName,
-                  email: userData.email,
-                  contactNo: userData.contactNo,
+                  name: profile.name,
+                  email: profile.email,
+                  phone: profile.phone || "",
                 }}
                 onSubmit={handleEditProfile}
+                isUpdateLoading={isUpdateLoading}
               />
             </TabsContent>
 
             <TabsContent value="change-password" className="mt-0">
-              <ChangePasswordForm onSubmit={handleChangePassword} />
+              <ChangePasswordForm
+                isChanging={isChangePasswordLoading}
+                onSubmit={handleChangePassword}
+              />
             </TabsContent>
           </div>
         </Tabs>

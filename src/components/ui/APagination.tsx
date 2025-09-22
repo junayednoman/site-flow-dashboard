@@ -11,13 +11,13 @@ import {
 import { useEffect } from "react";
 
 interface PaginationProps {
-  initialPage?: number; // Initial page number (default: 1)
-  totalItems: number; // Total number of items
-  itemsPerPage: number; // Number of items per page
-  maxVisiblePages?: number; // Maximum number of page numbers to show (default: 5)
-  onPageChange?: (page: number) => void; // Callback when page changes
-  currentPage: number; // Current page from parent state
-  setCurrentPage: (page: number) => void; // Function to update current page
+  initialPage?: number;
+  totalItems: number;
+  itemsPerPage: number;
+  maxVisiblePages?: number;
+  onPageChange?: (page: number) => void;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
 }
 
 export function APagination({
@@ -31,7 +31,7 @@ export function APagination({
 }: PaginationProps) {
   // Calculate totalPages based on totalItems and itemsPerPage
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  console.log('totalPages', totalPages);
+  // console.log('totalPages', totalPages, totalItems, itemsPerPage);
 
   // Sync currentPage with initialPage if it changes (e.g., from parent props)
   useEffect(() => {
@@ -45,7 +45,6 @@ export function APagination({
       if (onPageChange) {
         onPageChange(page);
       }
-      console.log("Navigated to page:", page);
     }
   };
 

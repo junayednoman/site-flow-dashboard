@@ -3,16 +3,23 @@
 import * as z from "zod";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import AForm from "@/components/form/AForm";
 import { AInput } from "@/components/form/AInput";
 import { forgetPasswordValidation } from "@/validations/auth.validation";
 import { Button } from "@/components/ui/button";
+import handleMutation from "@/utils/handleMutation";
+import { useForgotPasswordMutation } from "@/redux/api/authApi";
 
 const ForgetPasswordForm = () => {
+  const router = useRouter();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
+
   const onSubmit = async (data: z.infer<typeof forgetPasswordValidation>) => {
-    console.log("Form submitted:", data);
-    // handle reset logic here
+    handleMutation(data, forgotPassword, "Sending reset code...", () => {
+      router.push(`/auth/verify-otp?email=${data.email}`);
+    });
   };
 
   return (
@@ -40,8 +47,8 @@ const ForgetPasswordForm = () => {
       <AForm schema={forgetPasswordValidation} onSubmit={onSubmit}>
         <AInput name="email" label="Email address" type="email" required />
 
-        <Button type="submit" className="h-12 w-full">
-          Send Code
+        <Button type="submit" className="h-12 w-full" disabled={isLoading}>
+          {isLoading ? "Sending..." : "Send Code"}
         </Button>
       </AForm>
     </div>

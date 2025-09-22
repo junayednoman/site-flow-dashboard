@@ -1,20 +1,21 @@
-import Image from "next/image";
-import flower from "@/assets/flower.png";
-import NewPasswordForm from "./NewPasswordForm";
+import new_passwordForm from "./new_passwordForm";
 
-const SetNewPassword = () => {
+const Setnew_password = () => {
   return (
-    <main className="w-[80%] mx-auto flex flex-col items-center justify-center">
-      <div className="flex items-center gap-44 justify-between h-fit">
-        <div>
-          <Image src={flower} alt="logo" width={280} height={280} />
-        </div>
-        <div>
-          <NewPasswordForm />
+    <main className="mx-auto flex flex-col items-center justify-center">
+      <div className="h-screen grid grid-cols-2 w-full">
+        <div
+          className="w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(https://i.postimg.cc/FKz53pq7/bg.jpg)`,
+          }}
+        ></div>
+        <div className="flex items-center justify-center">
+          <new_passwordForm />
         </div>
       </div>
     </main>
   );
 };
 
-export default SetNewPassword;
+export default Setnew_password;
